@@ -12,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity()
         , SensorEventListener {
 
-
-    //git test1
-    //git test2
     // 誕生時のライフサイクルイベント
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
