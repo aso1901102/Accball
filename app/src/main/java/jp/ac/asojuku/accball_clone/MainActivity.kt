@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity()
 
 
     //git test1
-
+    //git test2
     // 誕生時のライフサイクルイベント
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
