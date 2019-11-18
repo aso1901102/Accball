@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity()
         , SensorEventListener {
 
+    //connect-test1
     // 誕生時のライフサイクルイベント
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
