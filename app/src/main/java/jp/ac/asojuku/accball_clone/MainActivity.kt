@@ -20,28 +20,25 @@ class MainActivity : AppCompatActivity()
     //SurfaceViewの幅と高さの初期値を設定
     private var surfaceWidth:Int = 0;
     private var surfaceHeight:Int = 0;
-
     //ボールの半径
     private val radius = 50.0f;
-
     //ボールの移動量を計算するための係数
     private val coef = 1000.0f;
 
     //ボールの座標
     //X座標
     private var ballX:Float = 0f;
-
     //Y座標
     private var ballY:Float = 0f;
-
     //X座標の重力加速度
     private var vx:Float = 0f;
-
     //Y座標の重力加速度
     private var vy:Float = 0f;
 
     //前回の時間を記録する変数
     private var time:Long = 0L;
+
+
 
     // 誕生時のライフサイクルイベント
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +73,24 @@ class MainActivity : AppCompatActivity()
 
     // センサーの値が変わった時のイベントコールバック
     override fun onSensorChanged(event: SensorEvent?) {
-        Log.d("TAG01","センサーが変わりました")
+        //eventの中身がnullなら何もせずにreturn
+        if(event == null){
+            return;
+        }
+
+        //センサーが変わった時にボールを描画する情報を計算する
+        //一番最初のセンサー検知の初期時間を取得
+        if(time == 0L){
+            //最初は現在のミリ秒システム時刻を設定
+            time = System.currentTimeMillis()
+        }
+
+        //eventのセンサー種別が加速度センサーだったら以下を実行
+        if(event.sensor.type == Sensor.TYPE_ACCELEROMETER){
+
+        }
+
+        /*Log.d("TAG01","センサーが変わりました")
         // イベントが何もなかったらそのままリターン
         if(event == null){ return; }
 
@@ -89,7 +103,10 @@ class MainActivity : AppCompatActivity()
                     ", z = ${event.values[2].toString()}";
             // デバッグログに出力
             Log.d("加速度センサー", str);
-        }
+        }*/
+
+
+
     }
 
     //Surfaceが生成された時のイベントに反応して呼ばれるコールバック
