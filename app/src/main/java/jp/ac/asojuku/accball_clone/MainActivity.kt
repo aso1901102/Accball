@@ -1,6 +1,8 @@
 package jp.ac.asojuku.accball_clone
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.SurfaceTexture
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -87,6 +89,38 @@ class MainActivity : AppCompatActivity()
 
         //eventのセンサー種別が加速度センサーだったら以下を実行
         if(event.sensor.type == Sensor.TYPE_ACCELEROMETER){
+            //センサーの取得した値（左右の変化：X軸、上下の変化：Y軸）
+            //横左右の値
+            val x = event.values[0]*-1
+            //縦上下の値
+            val y = event.values[1]
+
+            //前回の時間(time)かの経過時間を計算（現在時間ー前回時間＝経過時間）
+            //計算結果はFloatにしておく
+            var t = ((System.currentTimeMillis()) - time).toFloat()
+
+            //timeに今の時間を「前の時間」として記録
+            time = (System.currentTimeMillis())
+
+            //ミリ秒単位を秒単位で扱うために1000で割る
+            t /= 1000.0f;
+
+            //移動距離を計算（ボールの座標をどれだけ動かすか）
+            //X軸の移動距離
+            val dx = (vx * t) + (x + t * t) / 2.0f;
+            //Y軸の移動距離
+            val dy = (vy * t) + (y + t * t) / 2.0f;
+
+            //ボールの新しいX座標
+            this.ballX += (dx * coef);
+            //ボールの新しいY座標
+            this.ballY += (dy * coef);
+
+            //今の瞬間の加速度を代入しなおす
+            this.vx += (x * t);
+            this.vy += (y * t);
+
+            //キャンバスに描画する命令
 
         }
 
@@ -142,5 +176,26 @@ class MainActivity : AppCompatActivity()
                     SensorManager;
         // センサーマネージャに登録したリスナーを解除（OFFにする）
         sensorManager.unregisterListener(this)
+    }
+
+    //Surfaceのキャンバスに描画する処理をまとめたメソッド
+    private fun drawCanvas(){
+        //キャンバスをロックして取得する
+        val canvas = surfaceView.holder.lockCanvas()
+        //キャンバスに背景を設定する(dark gray)
+        canvas.drawColor(Color.DKGRAY)
+        //キャンバスに円を描いてボールにする
+        canvas.drawCircle(
+            this.ballX,//ボールのX座標
+            this.ballY,//ボールのY座標
+            this.radius,//ボールの半径
+            Paint().apply {//Paintの匿名クラス
+                //ボールの色を赤にする
+                this.color = Color.YELLOW
+            }
+        )
+        //キャンバスのロックを解除してキャンバスを描画
+        surfaceView.holder.unlockCanvasAndPost(canvas)
+
     }
 }
