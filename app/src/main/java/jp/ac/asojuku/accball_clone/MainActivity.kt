@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity()
     //ボールの半径
     private val radius = 50.0f;
     //ボールの移動量を計算するための係数
-    private val coef = 100.0f;
+    private val coef = 1000.0f;
 
     //ボールの座標
     //X座標
