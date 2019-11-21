@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity()
     //ボールの半径
     private val radius = 50.0f;
     //ボールの移動量を計算するための係数
-    private val coef = 1000.0f;
+    private val coef = 100.0f;
 
     //ボールの座標
     //X座標
@@ -54,24 +54,12 @@ class MainActivity : AppCompatActivity()
         holder.addCallback(this);
     }
 
-    // 画面表示・再表示のライフサイクルイベント
-    override fun onResume() {
-        // 親クラスのonResume()処理
-        super.onResume()
-        // 自クラスのonResume()処理
-
-    }
-
-    // 画面が非表示の時のライフサイクルイベント
-    override fun onPause() {
-        super.onPause()
-
-    }
 
     // 精度が変わった時のイベントコールバック
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
 
     }
+
 
     // センサーの値が変わった時のイベントコールバック
     override fun onSensorChanged(event: SensorEvent?) {
@@ -79,6 +67,10 @@ class MainActivity : AppCompatActivity()
         if(event == null){
             return;
         }
+
+        //Surfaceの高さが変わるたびに高さと幅を設定
+
+
 
         //センサーが変わった時にボールを描画する情報を計算する
         //一番最初のセンサー検知の初期時間を取得
@@ -107,9 +99,9 @@ class MainActivity : AppCompatActivity()
 
             //移動距離を計算（ボールの座標をどれだけ動かすか）
             //X軸の移動距離
-            val dx = (vx * t) + (x + t * t) / 2.0f;
+            val dx = (vx * t) + (x * t * t) / 2.0f;
             //Y軸の移動距離
-            val dy = (vy * t) + (y + t * t) / 2.0f;
+            val dy = (vy * t) + (y * t * t) / 2.0f;
 
             //ボールの新しいX座標
             this.ballX += (dx * coef);
@@ -120,8 +112,39 @@ class MainActivity : AppCompatActivity()
             this.vx += (x * t);
             this.vy += (y * t);
 
-            //キャンバスに描画する命令
+            //画面の端に来たら跳ね返る処理
+            //左右について
+            if((this.ballX - radius < 0) && vx < 0){
+                //左に向かってボールが左にはみ出したとき
+                //ボールを反転させて勢いをつける
+                vx = (vx * -1) / 1.5f;
+                //ボールがはみ出しているのを補正
+                ballX = this.radius;
+            }else if((this.ballX + radius > this.surfaceWidth) && vx > 0){
+                //右に向かってボールが右にはみ出したとき
+                //ボールを反転させて勢いをつける
+                vx = (vx * -1) / 1.5f;
+                //ボールのはみ出しを補正する
+                this.ballX = (this.surfaceWidth - radius)
+            }
 
+            //上下について
+            if((this.ballY - radius < 0) && vy < 0){
+                //上に向かってボールが上にはみ出したとき
+                //ボールを反転させて勢いをつける
+                vy = (vy * -1) / 1.5f;
+                //ボールがはみ出しているのを補正
+                ballY = this.radius;
+            }else if((this.ballY + radius > this.surfaceHeight) && vy > 0){
+                //右に向かってボールが右にはみ出したとき
+                //ボールを反転させて勢いをつける
+                vy = (vy * -1) /1.5f;
+                //ボールのはみ出しを補正する
+                this.ballY = (this.surfaceHeight - radius)
+            }
+
+            //キャンバスに描画する命令
+            this.drawCanvas();
         }
 
         /*Log.d("TAG01","センサーが変わりました")
@@ -165,6 +188,10 @@ class MainActivity : AppCompatActivity()
         //Surfaceが変化するたびに幅と高さを設定
         this.surfaceWidth = width;
         this.surfaceHeight = height;
+
+        //ボールの初期位置を設定
+        this.ballX = (surfaceWidth / 2).toFloat()
+        this.ballY = (surfaceHeight / 2).toFloat()
     }
 
     //Surfaceが破棄されたときにイベントに反応して呼ばれるコールバック
